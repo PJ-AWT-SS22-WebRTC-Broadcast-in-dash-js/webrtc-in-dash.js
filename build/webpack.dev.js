@@ -7,6 +7,7 @@ const config = merge(common, {
     mode: 'development',
     entry: {
         'dash.all': './index.js',
+        'dash.webrtc': './src/webrtc/index.js',
         'dash.mss': './src/mss/index.js',
         'dash.offline': './src/offline/index.js'
     },
