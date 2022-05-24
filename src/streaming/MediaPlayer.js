@@ -140,6 +140,7 @@ function MediaPlayer() {
         protectionController,
         metricsReportingController,
         mssHandler,
+        webRtcHandler,
         offlineController,
         adapter,
         mediaPlayerModel,
@@ -388,10 +389,12 @@ function MediaPlayer() {
         }
 
         if (view) {
+            console.log('view:', view)
             attachView(view);
         }
 
         if (source) {
+            console.log('source:', source)
             attachSource(source);
         }
 
@@ -1356,6 +1359,7 @@ function MediaPlayer() {
             _detectProtection();
             _detectMetricsReporting();
             _detectMss();
+            _detectWebRtc();
 
             if (streamController) {
                 streamController.switchToVideoElement();
@@ -2190,6 +2194,20 @@ function MediaPlayer() {
         }
     }
 
+    function _detectWebRtc() {
+        if (webRtcHandler) {
+            return;
+        }
+        let WebRtcHandler = dashjs.WebRtcHandler; /* jshint ignore:line */
+        console.log('WebRtcHandler:', WebRtcHandler)
+        if (typeof WebRtcHandler === 'function') {
+            Errors.extend(WebRtcHandler.errors);
+            webRtcHandler = WebRtcHandler(context).create({
+                videoModel
+            });
+        }
+    }
+
     function _detectOffline() {
         if (!mediaPlayerInitialized) {
             throw MEDIA_PLAYER_NOT_INITIALIZED_ERROR;
@@ -2263,22 +2281,28 @@ function MediaPlayer() {
     }
 
     function _initializePlayback() {
-
-        if (offlineController) {
-            offlineController.resetRecords();
+        console.log('webrtc:', webRtcHandler)
+        if (webRtcHandler) {
+            webRtcHandler.setChannelUrl(source);
         }
+        if (false) {
+            if (offlineController) {
+                offlineController.resetRecords();
+            }
 
-        if (!streamingInitialized && source) {
-            streamingInitialized = true;
-            logger.info('Streaming Initialized');
-            _createPlaybackControllers();
+            if (!streamingInitialized && source) {
+                streamingInitialized = true;
+                logger.info('Streaming Initialized');
+                _createPlaybackControllers();
 
-            if (typeof source === 'string') {
-                streamController.load(source);
-            } else {
-                streamController.loadWithManifest(source);
+                if (typeof source === 'string') {
+                    streamController.load(source);
+                } else {
+                    streamController.loadWithManifest(source);
+                }
             }
         }
+
 
         if (!playbackInitialized && isReady()) {
             playbackInitialized = true;
