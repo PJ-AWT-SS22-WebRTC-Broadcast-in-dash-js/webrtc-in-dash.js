@@ -389,12 +389,10 @@ function MediaPlayer() {
         }
 
         if (view) {
-            console.log('view:', view)
             attachView(view);
         }
 
         if (source) {
-            console.log('source:', source)
             attachSource(source);
         }
 
@@ -2199,7 +2197,6 @@ function MediaPlayer() {
             return;
         }
         let WebRtcHandler = dashjs.WebRtcHandler; /* jshint ignore:line */
-        console.log('WebRtcHandler:', WebRtcHandler)
         if (typeof WebRtcHandler === 'function') {
             Errors.extend(WebRtcHandler.errors);
             webRtcHandler = WebRtcHandler(context).create({
@@ -2281,11 +2278,9 @@ function MediaPlayer() {
     }
 
     function _initializePlayback() {
-        console.log('webrtc:', webRtcHandler)
         if (webRtcHandler) {
             webRtcHandler.setChannelUrl(source);
-        }
-        if (false) {
+        } else {
             if (offlineController) {
                 offlineController.resetRecords();
             }

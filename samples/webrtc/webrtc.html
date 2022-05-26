@@ -2,9 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Manual-player instantiation example</title>
+    <title>WebRTC-player instantiation example</title>
 
-    <script src="../../dist/dash.webrtc.debug.js"></script>
+    <script src="../../dist/dash.all.debug.js"></script>
+
+    <!-- add webrtc package which is required to play WebRTC streams -->
+    <script class="code" src="../../dist/dash.webrtc.debug.js"></script>
 
     <!-- Bootstrap core CSS -->
     <link href="../lib/bootstrap/bootstrap.min.css" rel="stylesheet">
@@ -21,7 +24,7 @@
         function init() {
             var video,
                 player,
-                url = 'https://whip.dev.eyevinn.technology:443/api/v1/whip/broadcaster/bcf4a2dc-0d6a-426e-a68a-8dbdd517b392';
+                url = 'https://broadcaster-wrtc.dev.eyevinn.technology/broadcaster/channel/77ce7223-4c43-44db-b0b5-706791a5fb5f';
 
             video = document.querySelector('video');
             player = dashjs.MediaPlayer().create();
@@ -41,8 +44,8 @@
         <div class="row">
             <div class="col-md-4">
                 <div class="h-100 p-5 bg-light border rounded-3">
-                    <h3>Manual load single video</h3>
-                    <p>A sample showing how to load a single video. Autoplay is set to false.</p>
+                    <h3>Manual load WebRTC video</h3>
+                    <p>A sample showing how to load a WebRTC video. Autoplay is set to false.</p>
                 </div>
             </div>
             <div class="col-md-8">
@@ -63,7 +66,6 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        console.log("dom loaded")
         init();
     });
 </script>
