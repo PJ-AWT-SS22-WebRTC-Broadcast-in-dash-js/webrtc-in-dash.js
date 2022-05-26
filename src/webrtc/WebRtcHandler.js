@@ -29,6 +29,7 @@
  *  POSSIBILITY OF SUCH DAMAGE.
  */
 import WebRtcErrors from './errors/WebRtcErrors';
+import 'regenerator-runtime/runtime';
 
 function WebRtcHandler(config) {
 
@@ -78,6 +79,9 @@ function WebRtcHandler(config) {
     }
 
     function _startPlayback() {
+        if (!channelUrl) {
+            return;
+        }
         const fetchConfig = {
             method: 'POST',
             // headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "https://web.whip.eyevinn.technology:443", "Access-Control-Allow-Method": "POST" },
@@ -88,6 +92,7 @@ function WebRtcHandler(config) {
             },
             body: JSON.stringify({})
         };
+        console.log(channelUrl);
         fetch(channelUrl, fetchConfig)
             .then((response) => {
                 viewerResourceUrl = response.headers.get('location');
