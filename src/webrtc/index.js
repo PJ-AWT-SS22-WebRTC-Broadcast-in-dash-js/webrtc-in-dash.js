@@ -40,7 +40,6 @@ if (!dashjs) {
 }
 
 dashjs.WebRtcHandler = WebRtcHandler;
-console.log('dashjs:', dashjs)
 
 export default dashjs;
 export { WebRtcHandler };
