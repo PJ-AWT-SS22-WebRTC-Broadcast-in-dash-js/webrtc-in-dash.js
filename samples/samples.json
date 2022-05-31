@@ -708,5 +708,21 @@
                 ]
             }
         ]
+    },
+    {
+        "section": "WebRTC",
+        "samples": [
+            {
+                "title": "Web Real Time Communication",
+                "description": "Example showing how to use dash.js to play WebRTC streams.",
+                "href": "webrtc/webrtc.html",
+                "image": "lib/img/WebRTC_Logo-700x590.png",
+                "labels": [
+                    "WebRTC",
+                    "Video",
+                    "Audio"
+                ]
+            }
+        ]
     }
 ]
