@@ -100,8 +100,8 @@ function WebRtcHandler(config) {
             })
             .then(async (whppOffer) => {
                 await peer.setRemoteDescription({type: 'offer', sdp: whppOffer.offer});
-                const answer = peer.createAnswer();
-                peer.setLocalDescription(answer);
+                const answer = await peer.createAnswer();
+                await peer.setLocalDescription(answer);
             })
             .then(() => {
                 iceGatheringTimeout = setTimeout(async () => {
