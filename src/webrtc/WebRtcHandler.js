@@ -69,7 +69,7 @@ function WebRtcHandler(config) {
 
     function onTrackEvent(evt) {
         if (evt.streams && evt.streams[0]) {
-            videoModel.setSource(evt.streams[0]);
+            videoModel.getElement().srcObject = evt.streams[0];
         }
     }
 
