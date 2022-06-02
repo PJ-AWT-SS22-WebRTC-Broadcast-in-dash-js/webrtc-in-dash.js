@@ -42,6 +42,7 @@ import DashJSError from './vo/DashJSError';
 import BoxParser from './utils/BoxParser';
 import URLUtils from './utils/URLUtils';
 import BlacklistController from './controllers/BlacklistController';
+import WebRtcFragmentController from '../webrtc/WebRtcFragmentController';
 
 
 const MEDIA_TYPES = [Constants.VIDEO, Constants.AUDIO, Constants.TEXT, Constants.MUXED, Constants.IMAGE];
@@ -108,17 +109,24 @@ function Stream(config) {
                 addBlacklistEventName: Events.SEGMENT_LOCATION_BLACKLIST_ADD
             });
 
-            fragmentController = FragmentController(context).create({
-                streamInfo: streamInfo,
-                mediaPlayerModel: mediaPlayerModel,
-                dashMetrics: dashMetrics,
-                errHandler: errHandler,
-                settings: settings,
-                boxParser: boxParser,
-                dashConstants: DashConstants,
-                urlUtils: urlUtils
-            });
-
+            let WebRtcHandler = dashjs.WebRtcHandler; /* jshint ignore:line */
+            if (typeof WebRtcHandler === 'function') {
+                fragmentController = WebRtcFragmentController(context).create({
+                    videoModel: videoModel,
+                    channelUrl: ''
+                });
+            } else {
+                fragmentController = FragmentController(context).create({
+                    streamInfo: streamInfo,
+                    mediaPlayerModel: mediaPlayerModel,
+                    dashMetrics: dashMetrics,
+                    errHandler: errHandler,
+                    settings: settings,
+                    boxParser: boxParser,
+                    dashConstants: DashConstants,
+                    urlUtils: urlUtils
+                });
+            }
         } catch (e) {
             throw e;
         }
