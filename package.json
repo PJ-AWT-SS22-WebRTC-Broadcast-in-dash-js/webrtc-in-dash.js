@@ -63,7 +63,7 @@
         "html-entities": "^1.2.1",
         "imsc": "^1.0.2",
         "localforage": "^1.7.1",
-        "@eyevinn/webrtc-player": "file:/home/levidaily/WebstormProjects/eyevinn-webrtc-player/eyevinn-webrtc-player-0.5.1.tgz"
+        "@eyevinn/webrtc-player": "PJ-AWT-SS22-WebRTC-Broadcast-in-dash-js/eyevinn-webrtc-player"
     },
     "repository": {
         "type": "git",

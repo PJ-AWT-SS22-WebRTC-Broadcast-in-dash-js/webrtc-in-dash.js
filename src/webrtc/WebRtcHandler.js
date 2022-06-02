@@ -28,14 +28,75 @@
  *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
  */
+import Debug from '../core/Debug';
+import {WebRTCPlayer} from '@eyevinn/webrtc-player';
+import Events from '../core/events/Events';
+import EventBus from '../core/EventBus';
 import WebRtcErrors from './errors/WebRtcErrors';
 
-function WebRtcHandler() {
+function WebRtcHandler(config) {
 
-    let instance;
+    config = config || {};
+    const context = this.context;
+    const eventBus = EventBus(context).getInstance();
+    const debug = Debug(context).getInstance();
+    const videoModel = config.videoModel;
+    const channelUrl = config.channelUrl;
+
+    let instance,
+        player,
+        logger,
+        mediaRecorder;
+
+    function setup() {
+        logger = debug.getLogger(instance);
+
+        const videoElement = videoModel.getElement();
+        player = new WebRTCPlayer({
+            type: 'se.eyevinn.webrtc',
+            video: {
+                onPeerTrack: _onPeerTrack,
+                onMute: (mute) => videoModel.getElement().muted = mute,
+                onStop: () => {
+                    videoElement.src = null;
+                    videoElement.load();
+                }
+            }
+        });
+        player.load(new URL(channelUrl));
+    }
+
+    /**
+     * @private
+     */
+    function _onPeerTrack(event) {
+        if (event.streams && event.streams[0]) {
+            const stream = event.streams[0];
+            mediaRecorder = new MediaRecorder(stream);
+            mediaRecorder.ondataavailable = _onDataAvailable;
+            mediaRecorder.start();
+        }
+    }
+
+    /**
+     * @private
+     */
+    function _onDataAvailable(event) {
+        logger.debug('Data available');
+        if (event.data.size > 0) {
+            eventBus.trigger(Events.LOADING_COMPLETED, {
+                request: null,
+                response: event.data || null,
+                error: null,
+                sender: instance
+            });
+        }
+    }
 
     instance = {
     };
+
+    setup();
 
     return instance;
 }
