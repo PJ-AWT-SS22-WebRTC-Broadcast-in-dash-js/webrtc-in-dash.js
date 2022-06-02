@@ -42,7 +42,6 @@ import DashJSError from './vo/DashJSError';
 import BoxParser from './utils/BoxParser';
 import URLUtils from './utils/URLUtils';
 import BlacklistController from './controllers/BlacklistController';
-import WebRtcFragmentController from '../webrtc/WebRtcFragmentController';
 
 
 const MEDIA_TYPES = [Constants.VIDEO, Constants.AUDIO, Constants.TEXT, Constants.MUXED, Constants.IMAGE];
@@ -111,9 +110,9 @@ function Stream(config) {
 
             let WebRtcHandler = dashjs.WebRtcHandler; /* jshint ignore:line */
             if (typeof WebRtcHandler === 'function') {
-                fragmentController = WebRtcFragmentController(context).create({
+                fragmentController = WebRtcHandler(context).create({
                     videoModel: videoModel,
-                    channelUrl: ''
+                    channelUrl: 'https://broadcaster-wrtc.dev.eyevinn.technology/broadcaster/channel/1217d5a4-8bbf-4a2a-9f48-b796076bc52a'
                 });
             } else {
                 fragmentController = FragmentController(context).create({
