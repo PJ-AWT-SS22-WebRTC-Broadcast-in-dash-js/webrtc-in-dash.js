@@ -29,92 +29,13 @@
  *  POSSIBILITY OF SUCH DAMAGE.
  */
 import WebRtcErrors from './errors/WebRtcErrors';
-import 'regenerator-runtime/runtime';
 
-function WebRtcHandler(config) {
+function WebRtcHandler() {
 
-    config = config || {};
-    const videoModel = config.videoModel;
-    let instance,
-        peer,
-        channelUrl,
-        viewerResourceUrl,
-        iceGatheringTimeout;
-
-    function setup() {
-        peer = new RTCPeerConnection({
-            iceServers: [{urls: 'stun:stun.l.google.com:19302'}]
-        });
-        peer.onicegatheringstatechange = _onIceGatheringStateChange;
-        peer.ontrack = onTrackEvent;
-    }
-
-    async function _onIceGatheringStateChange() {
-        if (peer.iceGatheringState === 'complete') {
-            await iceGatheringComplete();
-        }
-    }
-
-    async function iceGatheringComplete() {
-        clearTimeout(iceGatheringTimeout);
-        const response = await fetch(viewerResourceUrl, {
-            method: 'PUT',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({answer: peer.localDescription.sdp})
-        });
-        if (!response.ok) {
-            console.error(response.statusText);
-        }
-    }
-
-    function onTrackEvent(evt) {
-        if (evt.streams && evt.streams[0]) {
-            videoModel.getElement().srcObject = evt.streams[0];
-        }
-    }
-
-    function setChannelUrl(url) {
-        channelUrl = url;
-        _startPlayback();
-    }
-
-    function _startPlayback() {
-        if (!channelUrl) {
-            return;
-        }
-        const fetchConfig = {
-            method: 'POST',
-            // headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "https://web.whip.eyevinn.technology:443", "Access-Control-Allow-Method": "POST" },
-            headers: {
-                'Content-Type': 'application/json',
-                'Access-Control-Allow-Origin': 'https://broadcaster-wrtc.dev.eyevinn.technology:443',
-                'Access-Control-Allow-Method': 'POST'
-            },
-            body: JSON.stringify({})
-        };
-        console.log(channelUrl);
-        fetch(channelUrl, fetchConfig)
-            .then((response) => {
-                viewerResourceUrl = response.headers.get('location');
-                return response.json();
-            })
-            .then(async (whppOffer) => {
-                await peer.setRemoteDescription({type: 'offer', sdp: whppOffer.offer});
-                const answer = await peer.createAnswer();
-                await peer.setLocalDescription(answer);
-            })
-            .then(() => {
-                iceGatheringTimeout = setTimeout(async () => {
-                    await iceGatheringComplete();
-                }, 5000);
-            });
-    }
+    let instance;
 
     instance = {
-        setChannelUrl
     };
-
-    setup();
 
     return instance;
 }
