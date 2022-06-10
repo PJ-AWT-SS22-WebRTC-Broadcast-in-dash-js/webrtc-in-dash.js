@@ -28,7 +28,6 @@
  *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
  */
-import Debug from '../core/Debug';
 import {WebRTCPlayer} from '@eyevinn/webrtc-player';
 import Events from '../core/events/Events';
 import EventBus from '../core/EventBus';
@@ -39,17 +38,13 @@ function WebRtcHandler(config) {
     config = config || {};
     const context = this.context;
     const eventBus = EventBus(context).getInstance();
-    const debug = Debug(context).getInstance();
     const videoModel = config.videoModel;
 
     let instance,
         player,
-        logger,
         mediaRecorder;
 
     function setup() {
-        logger = debug.getLogger(instance);
-
         const videoElement = videoModel.getElement();
         player = new WebRTCPlayer({
             type: 'se.eyevinn.whpp',
@@ -80,9 +75,11 @@ function WebRtcHandler(config) {
     function _onPeerTrack(event) {
         if (event.streams && event.streams[0]) {
             const stream = event.streams[0];
+            videoModel.getElement().srcObject = stream; // bypass mse
+
             mediaRecorder = new MediaRecorder(stream);
             mediaRecorder.ondataavailable = _onDataAvailable;
-            mediaRecorder.start();
+            mediaRecorder.start(1000);
         }
     }
 
@@ -90,7 +87,6 @@ function WebRtcHandler(config) {
      * @private
      */
     function _onDataAvailable(event) {
-        logger.debug('Data available');
         if (event.data.size > 0) {
             eventBus.trigger(Events.LOADING_COMPLETED, {
                 request: null,
