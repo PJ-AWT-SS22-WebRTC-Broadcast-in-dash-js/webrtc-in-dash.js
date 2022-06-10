@@ -41,7 +41,6 @@ function WebRtcHandler(config) {
     const eventBus = EventBus(context).getInstance();
     const debug = Debug(context).getInstance();
     const videoModel = config.videoModel;
-    const channelUrl = config.channelUrl;
 
     let instance,
         player,
@@ -53,7 +52,7 @@ function WebRtcHandler(config) {
 
         const videoElement = videoModel.getElement();
         player = new WebRTCPlayer({
-            type: 'se.eyevinn.webrtc',
+            type: 'se.eyevinn.whpp',
             video: {
                 onPeerTrack: _onPeerTrack,
                 onMute: (mute) => videoModel.getElement().muted = mute,
@@ -61,9 +60,18 @@ function WebRtcHandler(config) {
                     videoElement.src = null;
                     videoElement.load();
                 }
-            }
+            },
+            debug: true
         });
-        player.load(new URL(channelUrl));
+        player.on('message', (message) => {
+            console.log(message);
+        });
+    }
+
+    function setChannelUrl(url) {
+        if (url) {
+            player.load(new URL(url));
+        }
     }
 
     /**
@@ -94,6 +102,7 @@ function WebRtcHandler(config) {
     }
 
     instance = {
+        setChannelUrl
     };
 
     setup();

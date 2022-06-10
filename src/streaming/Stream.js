@@ -108,24 +108,16 @@ function Stream(config) {
                 addBlacklistEventName: Events.SEGMENT_LOCATION_BLACKLIST_ADD
             });
 
-            let WebRtcHandler = dashjs.WebRtcHandler; /* jshint ignore:line */
-            if (typeof WebRtcHandler === 'function') {
-                fragmentController = WebRtcHandler(context).create({
-                    videoModel: videoModel,
-                    channelUrl: 'https://broadcaster-wrtc.dev.eyevinn.technology/broadcaster/channel/1217d5a4-8bbf-4a2a-9f48-b796076bc52a'
-                });
-            } else {
-                fragmentController = FragmentController(context).create({
-                    streamInfo: streamInfo,
-                    mediaPlayerModel: mediaPlayerModel,
-                    dashMetrics: dashMetrics,
-                    errHandler: errHandler,
-                    settings: settings,
-                    boxParser: boxParser,
-                    dashConstants: DashConstants,
-                    urlUtils: urlUtils
-                });
-            }
+            fragmentController = FragmentController(context).create({
+                streamInfo: streamInfo,
+                mediaPlayerModel: mediaPlayerModel,
+                dashMetrics: dashMetrics,
+                errHandler: errHandler,
+                settings: settings,
+                boxParser: boxParser,
+                dashConstants: DashConstants,
+                urlUtils: urlUtils
+            });
         } catch (e) {
             throw e;
         }

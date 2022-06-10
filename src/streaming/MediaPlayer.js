@@ -2278,31 +2278,31 @@ function MediaPlayer() {
     }
 
     function _initializePlayback() {
+        if (offlineController) {
+            offlineController.resetRecords();
+        }
+
         if (webRtcHandler) {
             webRtcHandler.setChannelUrl(source);
-        } else {
-            if (offlineController) {
-                offlineController.resetRecords();
-            }
-
-            if (!streamingInitialized && source) {
-                streamingInitialized = true;
-                logger.info('Streaming Initialized');
-                _createPlaybackControllers();
-
-                if (typeof source === 'string') {
-                    streamController.load(source);
-                } else {
-                    streamController.loadWithManifest(source);
-                }
-            }
         }
 
+        if (!streamingInitialized && source) {
+            streamingInitialized = true;
+            logger.info('Streaming Initialized');
+            _createPlaybackControllers();
 
-        if (!playbackInitialized && isReady()) {
-            playbackInitialized = true;
-            logger.info('Playback Initialized');
+            if (typeof source === 'string') {
+                streamController.load(source);
+            } else {
+                streamController.loadWithManifest(source);
+            }
         }
+    }
+
+
+    if (!playbackInitialized && isReady()) {
+        playbackInitialized = true;
+        logger.info('Playback Initialized');
     }
 
     instance = {
