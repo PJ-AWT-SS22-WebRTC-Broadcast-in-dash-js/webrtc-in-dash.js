@@ -29,33 +29,21 @@
  *  POSSIBILITY OF SUCH DAMAGE.
  */
 import {WebRTCPlayer} from '@eyevinn/webrtc-player';
-import Events from '../core/events/Events';
-import EventBus from '../core/EventBus';
 import WebRtcErrors from './errors/WebRtcErrors';
 
 function WebRtcHandler(config) {
 
     config = config || {};
-    const context = this.context;
-    const eventBus = EventBus(context).getInstance();
     const videoModel = config.videoModel;
 
     let instance,
-        player,
-        mediaRecorder;
+        player;
 
     function setup() {
-        const videoElement = videoModel.getElement();
+        // this will bypass MSE/EME
         player = new WebRTCPlayer({
             type: 'se.eyevinn.whpp',
-            video: {
-                onPeerTrack: _onPeerTrack,
-                onMute: (mute) => videoModel.getElement().muted = mute,
-                onStop: () => {
-                    videoElement.src = null;
-                    videoElement.load();
-                }
-            },
+            video: videoModel.getElement(),
             debug: true
         });
         player.on('message', (message) => {
@@ -66,34 +54,6 @@ function WebRtcHandler(config) {
     function setChannelUrl(url) {
         if (url) {
             player.load(new URL(url));
-        }
-    }
-
-    /**
-     * @private
-     */
-    function _onPeerTrack(event) {
-        if (event.streams && event.streams[0]) {
-            const stream = event.streams[0];
-            videoModel.getElement().srcObject = stream; // bypass mse
-
-            mediaRecorder = new MediaRecorder(stream);
-            mediaRecorder.ondataavailable = _onDataAvailable;
-            mediaRecorder.start(1000);
-        }
-    }
-
-    /**
-     * @private
-     */
-    function _onDataAvailable(event) {
-        if (event.data.size > 0) {
-            eventBus.trigger(Events.LOADING_COMPLETED, {
-                request: null,
-                response: event.data || null,
-                error: null,
-                sender: instance
-            });
         }
     }
 

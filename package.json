@@ -57,13 +57,13 @@
         "yargs": "16.0.3"
     },
     "dependencies": {
+        "@eyevinn/webrtc-player": "^0.5.1",
         "codem-isoboxer": "0.3.6",
         "es6-promise": "^4.2.8",
         "fast-deep-equal": "2.0.1",
         "html-entities": "^1.2.1",
         "imsc": "^1.0.2",
-        "localforage": "^1.7.1",
-        "@eyevinn/webrtc-player": "PJ-AWT-SS22-WebRTC-Broadcast-in-dash-js/eyevinn-webrtc-player"
+        "localforage": "^1.7.1"
     },
     "repository": {
         "type": "git",
