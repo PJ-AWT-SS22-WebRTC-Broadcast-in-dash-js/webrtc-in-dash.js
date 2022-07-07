@@ -30,6 +30,13 @@
             player = dashjs.MediaPlayer().create();
             player.initialize(video, url, false);
         }
+
+        function loadMPD() {
+            var url = "http://127.0.0.1:8080/manifest.mpd";
+            video = document.querySelector('video');
+            var player = dashjs.MediaPlayer().create();
+            player.initialize(video, url, true);
+        }
     </script>
 </head>
 <body>
@@ -57,8 +64,8 @@
                            value="https://broadcaster-wrtc.dev.eyevinn.technology/broadcaster/channel/77ce7223-4c43-44db-b0b5-706791a5fb5f"
                            aria-describedby="basic-addon1">
                 </div>
-                <button type="button" id="loadButton" class="btn btn-success" onclick="loadStream(this)">Load stream
-                </button>
+                <button type="button" id="loadButton" class="btn btn-success" onclick="loadStream(this)">Load stream</button>
+                <button type="button" id="loadButton" class="btn btn-success" onclick="loadMPD(this)">Load MPD</button>
             </div>
         </div>
         <div class="row mt-4">
