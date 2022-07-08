@@ -18,13 +18,21 @@
     </style>
 
     <script class="code">
-        function loadStream() {
-            var video,
-                player,
-                url = document.getElementById('streamUrl').value;
+        const player = dashjs.MediaPlayer().create();
 
-            video = document.querySelector('video');
-            player = dashjs.MediaPlayer().create();
+        function loadDashStream() {
+            const video = document.querySelector('video');
+            const url = document.getElementById('streamUrl').value;
+
+            player.updateSettings({webRtc: {enabled: true, dashOnFail: false}});
+            player.initialize(video, url, false);
+        }
+
+        function loadWebRtcStream() {
+            const video = document.querySelector('video');
+            const url = document.getElementById('streamUrl').value;
+
+            player.updateSettings({webRtc: {enabled: false}});
             player.initialize(video, url, false);
         }
     </script>
@@ -49,12 +57,16 @@
         <div class="row mt-4">
             <div class="col-md-12">
                 <div class="input-group mb-3">
-                    <span class="input-group-text" id="basic-addon1">Broadcasting Channel</span>
+                    <span class="input-group-text" id="basic-addon1">Manifest Source</span>
                     <input type="text" id="streamUrl" class="form-control" placeholder="Broadcasting channel"
                            value="https://broadcaster-wrtc.dev.eyevinn.technology/broadcaster/channel/77ce7223-4c43-44db-b0b5-706791a5fb5f"
                            aria-describedby="basic-addon1">
                 </div>
-                <button type="button" id="loadButton" class="btn btn-success" onclick="loadStream(this)">Load stream
+                <button type="button" class="btn btn-success" onclick="loadDashStream(this)">
+                    Load DASH stream
+                </button>
+                <button type="button" class="btn btn-success" onclick="loadWebRtcStream(this)">
+                    Load WebRTC stream
                 </button>
             </div>
         </div>
@@ -72,7 +84,6 @@
             &copy; DASH-IF
         </footer>
     </div>
-</div>
 </main>
 </body>
 </html>

@@ -322,7 +322,11 @@ declare namespace dashjs {
                 rtpSafetyFactor?: number,
                 mode?: 'query' | 'header',
                 enabledKeys?: Array<string>
-            }
+            },
+        };
+        webRtc?: {
+            enabled?: boolean,
+            dashOnFail?: boolean
         };
         errors?: {
             recoverAttempts?: {

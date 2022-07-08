@@ -49,6 +49,7 @@ import DashJSError from '../vo/DashJSError';
 import Errors from '../../core/errors/Errors';
 import EventController from './EventController';
 import ConformanceViolationConstants from '../constants/ConformanceViolationConstants';
+import WebRtcHandler from '../../webrtc/WebRtcHandler';
 
 const PLAYBACK_ENDED_TIMER_INTERVAL = 200;
 const DVR_WAITING_OFFSET = 2;
@@ -103,6 +104,7 @@ function StreamController() {
         settings,
         firstLicenseIsFetched,
         waitForPlaybackStartTimeout,
+        webRtcHandler,
         errorInformation;
 
     function setup() {
@@ -157,6 +159,13 @@ function StreamController() {
             if (protectionData) {
                 protectionController.setProtectionData(protectionData);
             }
+        }
+
+        if (settings.get().webRtc.enabled) {
+            webRtcHandler = WebRtcHandler(context).getInstance();
+            webRtcHandler.setConfig({
+                videoModel: videoModel
+            });
         }
 
         registerEvents();
@@ -1190,9 +1199,18 @@ function StreamController() {
     function _onManifestUpdated(e) {
         if (!e.error) {
             logger.info('Manifest updated... updating data system wide.');
+            const manifest = e.manifest;
+            if (settings.get().webRtc.enabled) {
+                const webRtcSucceeded = webRtcHandler.loadFromManifest(manifest);
+
+                // only continue with DASH workflow if (1) WebRTC failed (2) `dashOnFail` is set to true
+                if (webRtcSucceeded || !settings.get().webRtc.dashOnFail) {
+                    return;
+                }
+            }
+
             //Since streams are not composed yet , need to manually look up useCalculatedLiveEdgeTime to detect if stream
             //is SegmentTimeline to avoid using time source
-            const manifest = e.manifest;
             adapter.updatePeriods(manifest);
 
             let manifestUTCTimingSources = adapter.getUTCTimingSources();

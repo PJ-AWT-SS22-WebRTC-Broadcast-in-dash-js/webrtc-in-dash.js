@@ -140,7 +140,6 @@ function MediaPlayer() {
         protectionController,
         metricsReportingController,
         mssHandler,
-        webRtcHandler,
         offlineController,
         adapter,
         mediaPlayerModel,
@@ -2264,12 +2263,9 @@ function MediaPlayer() {
     }
 
     function _initializePlayback() {
+
         if (offlineController) {
             offlineController.resetRecords();
-        }
-
-        if (webRtcHandler) {
-            webRtcHandler.setChannelUrl(source);
         }
 
         if (!streamingInitialized && source) {
