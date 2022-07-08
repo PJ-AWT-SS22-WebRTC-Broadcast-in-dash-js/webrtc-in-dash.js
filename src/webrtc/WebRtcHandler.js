@@ -31,34 +31,61 @@
 import {WebRTCPlayer} from '@eyevinn/webrtc-player';
 import FactoryMaker from '../core/FactoryMaker';
 
-function WebRtcHandler(config) {
-
-    config = config || {};
-    const videoModel = config.videoModel;
+function WebRtcHandler() {
 
     let instance,
+        videoModel,
         player;
 
     function setup() {
-        // this will bypass MSE/EME
-        player = new WebRTCPlayer({
-            type: 'se.eyevinn.whpp',
-            video: videoModel.getElement(),
-            debug: true
-        });
-        player.on('message', (message) => {
-            console.log(message);
-        });
     }
 
-    function setChannelUrl(url) {
-        if (url) {
-            player.load(new URL(url));
+    function setConfig(config) {
+        if (config.videoModel) {
+            videoModel = config.videoModel;
+        }
+    }
+
+    function loadFromManifest(manifest) {
+        // TODO: only use non-multiplexed representations (i.e. only video, only audio, only subtitles, ...
+        let webRtcAdaptationSet;
+
+        // TODO: implement a more sophisticated logic to get the latest WebRTC adaptation set
+        const periods = manifest.Period_asArray;
+        for (let i = periods.length; i > 0 && !webRtcAdaptationSet; i++) {
+            webRtcAdaptationSet = periods[i - 1].AdaptationSet_asArray
+                .find((adaptationSet) => adaptationSet.mimeType === 'video RTP/AVP');
+        }
+
+        if (webRtcAdaptationSet) {
+            _initializeWebRtcPlayer(webRtcAdaptationSet['xlink:rel']);
+            const channelUrl = webRtcAdaptationSet['xlink:href'];
+            player.load(new URL(channelUrl));
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    function _initializeWebRtcPlayer(sessionNegotiationProtocol) {
+        switch (sessionNegotiationProtocol) {
+            case 'urn:ietf:params:whip:whpp':
+                player = new WebRTCPlayer({
+                    type: 'se.eyevinn.whpp',
+                    video: videoModel.getElement(),
+                    debug: true
+                });
+                return true;
+            default:
+                // TODO: implement proper error handling
+                console.error(`Unknown WebRTC session negotiation protocol '${sessionNegotiationProtocol}'.`);
+                return false;
         }
     }
 
     instance = {
-        setChannelUrl
+        setConfig,
+        loadFromManifest
     };
 
     setup();
@@ -67,4 +94,4 @@ function WebRtcHandler(config) {
 }
 
 WebRtcHandler.__dashjs_factory_name = 'WebRtcHandler';
-export default FactoryMaker.getClassFactory(WebRtcHandler);
+export default FactoryMaker.getSingletonFactory(WebRtcHandler);
