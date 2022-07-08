@@ -5,7 +5,6 @@ const common = require('./webpack.base.js').config;
 const entries = {
     'dash.all': './index.js',
     'dash.mss': './src/mss/index.js',
-    'dash.webrtc': './src/webrtc/index.js',
     'dash.mediaplayer': './index_mediaplayerOnly.js',
     'dash.protection': './src/streaming/protection/Protection.js',
     'dash.reporting': './src/streaming/metrics/MetricsReporting.js',

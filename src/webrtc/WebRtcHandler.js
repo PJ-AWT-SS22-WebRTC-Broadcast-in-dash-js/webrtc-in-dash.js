@@ -29,7 +29,7 @@
  *  POSSIBILITY OF SUCH DAMAGE.
  */
 import {WebRTCPlayer} from '@eyevinn/webrtc-player';
-import WebRtcErrors from './errors/WebRtcErrors';
+import FactoryMaker from '../core/FactoryMaker';
 
 function WebRtcHandler(config) {
 
@@ -67,7 +67,4 @@ function WebRtcHandler(config) {
 }
 
 WebRtcHandler.__dashjs_factory_name = 'WebRtcHandler';
-const factory = dashjs.FactoryMaker.getClassFactory(WebRtcHandler); /* jshint ignore:line */
-factory.errors = WebRtcErrors;
-dashjs.FactoryMaker.updateClassFactory(WebRtcHandler.__dashjs_factory_name, factory); /* jshint ignore:line */
-export default factory; /* jshint ignore:line */
+export default FactoryMaker.getClassFactory(WebRtcHandler);

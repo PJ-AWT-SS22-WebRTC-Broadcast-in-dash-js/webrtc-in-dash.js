@@ -1358,7 +1358,6 @@ function MediaPlayer() {
             _detectProtection();
             _detectMetricsReporting();
             _detectMss();
-            _detectWebRtc();
 
             if (streamController) {
                 streamController.switchToVideoElement();
@@ -2189,19 +2188,6 @@ function MediaPlayer() {
                 BASE64: BASE64,
                 ISOBoxer: ISOBoxer,
                 settings: settings
-            });
-        }
-    }
-
-    function _detectWebRtc() {
-        if (webRtcHandler) {
-            return;
-        }
-        let WebRtcHandler = dashjs.WebRtcHandler; /* jshint ignore:line */
-        if (typeof WebRtcHandler === 'function') {
-            Errors.extend(WebRtcHandler.errors);
-            webRtcHandler = WebRtcHandler(context).create({
-                videoModel
             });
         }
     }
