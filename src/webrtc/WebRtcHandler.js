@@ -28,14 +28,14 @@
  *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
  */
-import {WebRTCPlayer} from '@eyevinn/webrtc-player';
+import {WHPPClient} from '@eyevinn/whpp-client';
 import FactoryMaker from '../core/FactoryMaker';
 
 function WebRtcHandler() {
 
     let instance,
         videoModel,
-        player;
+        webRtcPeer;
 
     function setup() {
     }
@@ -58,23 +58,30 @@ function WebRtcHandler() {
         }
 
         if (webRtcAdaptationSet) {
-            _initializeWebRtcPlayer(webRtcAdaptationSet['xlink:rel']);
-            const channelUrl = webRtcAdaptationSet['xlink:href'];
-            player.load(new URL(channelUrl));
-            return true;
+            const success = _initializeWebRtcPeer(webRtcAdaptationSet['xlink:rel']);
+            if (success) {
+                const channelUrl = webRtcAdaptationSet['xlink:href'];
+                const client = new WHPPClient(webRtcPeer, channelUrl);
+                client.connect()
+                    .then(() => console.log('WebRTC connected.'))
+                    .catch(console.warn);
+                return true;
+            }
+            return false;
         } else {
             return false;
         }
     }
 
-    function _initializeWebRtcPlayer(sessionNegotiationProtocol) {
+    function _initializeWebRtcPeer(sessionNegotiationProtocol) {
         switch (sessionNegotiationProtocol) {
             case 'urn:ietf:params:whip:whpp':
-                player = new WebRTCPlayer({
-                    type: 'se.eyevinn.whpp',
-                    video: videoModel.getElement(),
-                    debug: true
-                });
+                webRtcPeer = new RTCPeerConnection();
+                webRtcPeer.ontrack = (evt) => {
+                    if (evt.streams && evt.streams[0]) {
+                        videoModel.getElement().srcObject = evt.streams[0];
+                    }
+                };
                 return true;
             default:
                 // TODO: implement proper error handling
@@ -84,8 +91,8 @@ function WebRtcHandler() {
     }
 
     function destroy() {
-        if (player) {
-            player.destroy();
+        if (webRtcPeer) {
+            webRtcPeer.close();
             videoModel.getElement().srcObject = null;  // player.destroy() doesn't clean up the srcObject
         }
     }
