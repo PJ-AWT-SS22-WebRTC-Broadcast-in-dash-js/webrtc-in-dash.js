@@ -61,7 +61,7 @@ function WebRtcHandler() {
             const success = _initializeWebRtcPeer(webRtcAdaptationSet['xlink:rel']);
             if (success) {
                 const channelUrl = webRtcAdaptationSet['xlink:href'];
-                const client = new WHPPClient(webRtcPeer, channelUrl);
+                const client = new WHPPClient(webRtcPeer, new URL(channelUrl));
                 client.connect()
                     .then(() => console.log('WebRTC connected.'))
                     .catch(console.warn);
