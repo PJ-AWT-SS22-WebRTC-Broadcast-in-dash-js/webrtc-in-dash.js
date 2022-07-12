@@ -84,7 +84,10 @@ function WebRtcHandler() {
     }
 
     function destroy() {
-        player.destroy();
+        if (player) {
+            player.destroy();
+            videoModel.getElement().srcObject = null;  // player.destroy() doesn't clean up the srcObject
+        }
     }
 
     instance = {

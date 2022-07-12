@@ -161,7 +161,7 @@ function StreamController() {
             }
         }
 
-        if (settings.get().webRtc.enabled) {
+        if (!webRtcHandler) {
             webRtcHandler = WebRtcHandler(context).getInstance();
             webRtcHandler.setConfig({
                 videoModel: videoModel
