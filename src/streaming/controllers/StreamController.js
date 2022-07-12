@@ -1203,10 +1203,12 @@ function StreamController() {
             if (settings.get().webRtc.enabled) {
                 const webRtcSucceeded = webRtcHandler.loadFromManifest(manifest);
 
-                // only continue with DASH workflow if (1) WebRTC failed (2) `dashOnFail` is set to true
+                // only continue with DASH workflow if (1) WebRTC failed and (2) `dashOnFail` is set to true
                 if (webRtcSucceeded || !settings.get().webRtc.dashOnFail) {
                     return;
                 }
+            } else {
+                webRtcHandler.destroy();
             }
 
             //Since streams are not composed yet , need to manually look up useCalculatedLiveEdgeTime to detect if stream

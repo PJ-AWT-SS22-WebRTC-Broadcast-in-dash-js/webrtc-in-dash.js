@@ -83,9 +83,14 @@ function WebRtcHandler() {
         }
     }
 
+    function destroy() {
+        player.destroy();
+    }
+
     instance = {
         setConfig,
-        loadFromManifest
+        loadFromManifest,
+        destroy
     };
 
     setup();
