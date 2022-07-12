@@ -52,8 +52,8 @@ function WebRtcHandler() {
 
         // TODO: implement a more sophisticated logic to get the latest WebRTC adaptation set
         const periods = manifest.Period_asArray;
-        for (let i = periods.length; i > 0 && !webRtcAdaptationSet; i++) {
-            webRtcAdaptationSet = periods[i - 1].AdaptationSet_asArray
+        for (let i = periods.length - 1; i >= 0 && !webRtcAdaptationSet; i--) {
+            webRtcAdaptationSet = periods[i].AdaptationSet_asArray
                 .find((adaptationSet) => adaptationSet.mimeType === 'video RTP/AVP');
         }
 
