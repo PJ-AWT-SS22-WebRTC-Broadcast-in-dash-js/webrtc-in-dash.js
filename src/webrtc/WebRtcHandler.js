@@ -57,20 +57,24 @@ function WebRtcHandler() {
                 .find((adaptationSet) => adaptationSet.mimeType === 'video RTP/AVP');
         }
 
-        if (webRtcAdaptationSet) {
-            const success = _initializeWebRtcPeer(webRtcAdaptationSet['xlink:rel']);
-            if (success) {
-                const channelUrl = webRtcAdaptationSet['xlink:href'];
-                const client = new WHPPClient(webRtcPeer, new URL(channelUrl));
-                client.connect()
-                    .then(() => console.log('WebRTC connected.'))
-                    .catch(console.warn);
-                return true;
-            }
-            return false;
+        if (webRtcAdaptationSet && webRtcAdaptationSet['xlink:actuate'] === 'onLoad') {
+            return setupClient(webRtcAdaptationSet);
         } else {
             return false;
         }
+    }
+
+    function setupClient(webRtcAdaptationSet) {
+        const success = _initializeWebRtcPeer(webRtcAdaptationSet['xlink:rel']);
+        if (success) {
+            const channelUrl = webRtcAdaptationSet['xlink:href'];
+            const client = new WHPPClient(webRtcPeer, new URL(channelUrl));
+            client.connect()
+                .then(() => console.log('WebRTC connected.'))
+                .catch(console.warn);
+            return true;
+        }
+        return false;
     }
 
     function _initializeWebRtcPeer(sessionNegotiationProtocol) {
