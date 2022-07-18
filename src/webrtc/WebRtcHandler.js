@@ -57,7 +57,7 @@ function WebRtcHandler() {
                 .find((adaptationSet) => adaptationSet.mimeType === 'video RTP/AVP');
         }
 
-        if (webRtcAdaptationSet && webRtcAdaptationSet['xlink:actuate'] === 'onLoad') {
+        if (webRtcAdaptationSet && webRtcAdaptationSet['xlink:actuate'] === 'onRequest') {
             return setupClient(webRtcAdaptationSet);
         } else {
             return false;
