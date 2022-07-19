@@ -5,6 +5,48 @@ Build status (CircleCI): [![CircleCI](https://circleci.com/gh/Dash-Industry-Foru
 
 [Join #dashjs on Slack!](https://join.slack.com/t/dashif/shared_invite/zt-egme869x-JH~UPUuLoKJB26fw7wj3Gg)
 
+## Testing the WebRTC extension
+There are two options WebRTC playback can be tested with:
+1. In development mode
+    ```shell
+    git clone https://github.com/PJ-AWT-SS22-WebRTC-Broadcast-in-dash-js/webrtc-in-dash.js
+    cd webrtc-in-dashjs
+    # branch webrtc-as-setting is checked out per default
+    npm install
+    npm run start
+    google-chrome http://localhost:3000/samples/webrtc/webrtc.html
+    ```
+
+2. In productive mode
+    ```shell
+    git clone https://github.com/PJ-AWT-SS22-WebRTC-Broadcast-in-dash-js/webrtc-in-dash.js
+    cd webrtc-in-dashjs
+    # branch webrtc-as-setting is checked out per default
+    npm install
+    npm prepack
+    google-chrome ./samples/webrtc/webrtc.html
+    ```
+   Instead of opening the sample page in browser via the command line, you can also give your full local path to the sample page `webrtc.html`.
+
+To connect to a stream source, you must enter the valid address of any [WHPP](https://github.com/Eyevinn/webrtc-http-playback-protocol/blob/master/webrtc-http-playback-protocol.md) playback endpoint in the opened web page and hit a `Load ... stream` button.
+
+### Integration into your own code
+It is also possible to include the built `dist/dash.all.min.js` file from `npm prepack` in your own code.
+`samples/webrtc/webrtc.html` provides an example on how to use it.
+To enable WebRTC capabilities, you have to call `updateSettings({webrtc: {enabled: true}})` before initializing the player as usual.
+When the MPD read by dash.js contains an adaptation set like the following, WebRTC playback instead of MPEG-DASH playback is started:
+```xml
+<AdaptationSet
+    mimeType="video RTP/AVP"
+    xlink:rel="urn:ietf:params:whip:whpp"
+    xlink:href="https://channel.url/for/whpp"
+    xlink:actuate="onRequest"
+/>
+```
+Notes on WebRTC playback:
+1. The value of `xlink:href` must be the valid address of any [WHPP](https://github.com/Eyevinn/webrtc-http-playback-protocol/blob/master/webrtc-http-playback-protocol.md) playback endpoint.
+2. If `updateSettings({webrtc: {enabled: true, dashOnFail: true}})` is called before initialization, dash.js will fall back to MPEG-DASH playback in case no WebRTC adaptation set is present.
+
 ## Migration from v3.x to v4.0
 If you are migrating from dash.js v3.x to dash.js v4.x please read the migration document found [here](https://github.com/Dash-Industry-Forum/dash.js/wiki/Migration-to-dash.js-4.0).
 
