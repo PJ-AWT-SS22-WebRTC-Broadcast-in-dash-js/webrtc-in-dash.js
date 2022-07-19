@@ -2289,12 +2289,11 @@ function MediaPlayer() {
                 streamController.loadWithManifest(source, startTime);
             }
         }
-    }
 
-
-    if (!playbackInitialized && isReady()) {
-        playbackInitialized = true;
-        logger.info('Playback Initialized');
+        if (!playbackInitialized && isReady()) {
+            playbackInitialized = true;
+            logger.info('Playback Initialized');
+        }
     }
 
     instance = {

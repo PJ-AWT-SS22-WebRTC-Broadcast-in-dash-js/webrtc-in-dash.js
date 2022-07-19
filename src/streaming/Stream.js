@@ -118,6 +118,7 @@ function Stream(config) {
                 dashConstants: DashConstants,
                 urlUtils: urlUtils
             });
+
         } catch (e) {
             throw e;
         }
