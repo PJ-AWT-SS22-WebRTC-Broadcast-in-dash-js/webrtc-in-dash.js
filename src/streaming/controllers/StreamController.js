@@ -1256,7 +1256,6 @@ function StreamController() {
 
             //Since streams are not composed yet , need to manually look up useCalculatedLiveEdgeTime to detect if stream
             //is SegmentTimeline to avoid using time source
-            const manifest = e.manifest;
             adapter.updatePeriods(manifest);
 
             let manifestUTCTimingSources = adapter.getUTCTimingSources();
