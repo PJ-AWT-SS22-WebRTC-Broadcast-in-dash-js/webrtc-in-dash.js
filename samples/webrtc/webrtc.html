@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>WebRTC-player instantiation example</title>
+
+    <script src="../../dist/dash.all.debug.js"></script>
+
+    <!-- Bootstrap core CSS -->
+    <link href="../lib/bootstrap/bootstrap.min.css" rel="stylesheet">
+    <link href="../lib/main.css" rel="stylesheet">
+
+    <style>
+        video {
+            width: 640px;
+            height: 360px;
+        }
+    </style>
+
+    <script class="code">
+        const player = dashjs.MediaPlayer().create();
+
+        function loadDashStream() {
+            const video = document.querySelector('video');
+            const url = document.getElementById('streamUrl').value;
+
+            player.updateSettings({webRtc: {enabled: false}});
+            player.initialize(video, url, false);
+        }
+
+        function loadWebRtcStream() {
+            const video = document.querySelector('video');
+            const url = document.getElementById('streamUrl').value;
+
+            player.updateSettings({webRtc: {enabled: true, dashOnFail: false}});
+            player.initialize(video, url, false);
+        }
+    </script>
+</head>
+<body>
+
+<main>
+    <div class="container py-4">
+        <header class="pb-3 mb-4 border-bottom">
+            <img class=""
+                 src="../lib/img/dashjs-logo.png"
+                 width="200">
+        </header>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="h-100 p-5 bg-light border rounded-3">
+                    <h3>WebRTC video broadcast player example</h3>
+                    <p>A sample showing how to load a WebRTC broadcasting video. Autoplay is set to false.</p>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-4">
+            <div class="col-md-12">
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="basic-addon1">Manifest Source</span>
+                    <input type="text" id="streamUrl" class="form-control" placeholder="Broadcasting channel"
+                           value="http://127.0.0.1:8080/manifestWebrtc.mpd"
+                           aria-describedby="basic-addon1">
+                </div>
+                <button type="button" class="btn btn-success" onclick="loadDashStream(this)">
+                    Load DASH stream
+                </button>
+                <button type="button" class="btn btn-success" onclick="loadWebRtcStream(this)">
+                    Load WebRTC stream
+                </button>
+            </div>
+        </div>
+        <div class="row mt-4">
+            <div class="col-md-12">
+                <video autoplay muted controls></video>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div id="code-output"></div>
+            </div>
+        </div>
+        <footer class="pt-3 mt-4 text-muted border-top">
+            &copy; DASH-IF
+        </footer>
+    </div>
+</main>
+</body>
+</html>

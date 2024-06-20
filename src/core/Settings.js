@@ -941,6 +941,10 @@ function Settings() {
                 enabledKeys: ['br', 'd', 'ot', 'tb' , 'bl', 'dl', 'mtp', 'nor', 'nrr', 'su' , 'bs', 'rtp' , 'cid', 'pr', 'sf', 'sid', 'st', 'v']
             }
         },
+        webRtc: {
+            enabled: false,
+            dashOnFail: true
+        },
         errors: {
             recoverAttempts: {
                 mediaErrorDecode: 5
